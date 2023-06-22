@@ -1,0 +1,24 @@
+{
+    "email": {
+      "tokenEndpoint": "https://example.com/email/token",
+      "defaultContent": {
+        "subject": "Hello1",
+        "body": "This is an email message."
+      }
+    },
+    "sms": {
+      "tokenEndpoint": "https://example.com/sms/token",
+      "defaultContent": {
+        "phoneNumber": "1234567890",
+        "message": "This is an SMS message."
+      }
+    },
+    "push": {
+      "tokenEndpoint": "https://example.com/push/token",
+      "defaultContent": {
+        "title": "New Notification",
+        "body": "This is a push notification."
+      }
+    }
+  }
+  

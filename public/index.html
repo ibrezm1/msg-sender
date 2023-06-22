@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Message Sender</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select, input[type="text"], textarea {
+      width: 300px;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      height: 150px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Message Sender</h1>
+
+  <label for="messageType">Message Type:</label>
+  <select id="messageType" onchange="populateMessage()">
+    <option value="">Select message type</option>
+    <option value="email">Email</option>
+    <option value="sms">SMS</option>
+    <option value="push">Push Notification</option>
+  </select>
+
+  <label for="tokenEndpoint">Token Endpoint:</label>
+  <input type="text" id="tokenEndpoint" placeholder="Enter the token endpoint">
+
+  <label for="message">Message:</label>
+  <textarea id="message" placeholder="Enter the message"></textarea>
+
+  <button onclick="sendMessage()">Send Message</button>
+
+  <script>
+    // External configuration JSON
+    var config = {
+      email: {
+        tokenEndpoint: "https://example.com/email/token",
+        defaultContent: {
+          subject: "Hello",
+          body: "This is an email message."
+        }
+      },
+      sms: {
+        tokenEndpoint: "https://example.com/sms/token",
+        defaultContent: {
+          phoneNumber: "1234567890",
+          message: "This is an SMS message."
+        }
+      },
+      push: {
+        tokenEndpoint: "https://example.com/push/token",
+        defaultContent: {
+          title: "New Notification",
+          body: "This is a push notification."
+        }
+      }
+    };
+
+    function populateMessage() {
+  var messageType = document.getElementById("messageType").value;
+
+  // Exit if the message type is blank
+  if (!messageType) {
+    return;
+  }
+
+  // Fetch message details from the server
+  fetch(`http://localhost:3000/get-message-details?messageType=${messageType}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("tokenEndpoint").value = data.tokenEndpoint;
+      document.getElementById("message").value = JSON.stringify(data.defaultContent);
+    })
+    .catch(error => {
+      console.error("Error fetching message details:", error);
+    });
+}
+
+    function sendMessage() {
+      var tokenEndpoint = document.getElementById("tokenEndpoint").value;
+      var messageType = document.getElementById("messageType").value;
+      var message = document.getElementById("message").value;
+
+      // Create the JSON data for the POST request
+      var postData = {
+        tokenEndpoint: tokenEndpoint,
+        messageType: messageType,
+        message: JSON.parse(message)
+      };
+
+      // Send the POST request
+      fetch("http://localhost:3000/message-endpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Message sent:", data);
+        // Handle the response from the message endpoint as needed
+      })
+      .catch(error => {
+        console.error("Error sending message:", error);
+        // Handle the error if the request fails
+      });
+    }
+  </script>
+</body>
+</html>
