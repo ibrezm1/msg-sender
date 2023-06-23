@@ -1,6 +1,6 @@
 const express = require('express');
 const { faker } = require('@faker-js/faker');
-const config = require('../config.json');
+const config = require('../config/config.json');
 
 const router = express.Router();
 

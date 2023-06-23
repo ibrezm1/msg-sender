@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const getMessageDetailsRouter = require('./router/getMessageDetailsRouter');
 const messageEndpointRouter = require('./router/messageEndpointRouter');
+const gcsStorageRouter = require('./router/gcsStorageRouter'); // Add this line
+const configrouter = require('./router/configRouter');
 
 const app = express();
 const port = 3000;
@@ -15,6 +17,8 @@ app.use(express.static('public'));
 // Register routers
 app.use('/get-message-details', getMessageDetailsRouter);
 app.use('/message-endpoint', messageEndpointRouter);
+app.use('/gcs-storage', gcsStorageRouter); // Add this line
+app.use('/config', configrouter); // Add this line
 
 // Start the server
 app.listen(port, () => {

@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { logger, logWithResponse } = require('../utils/logger');
 const { isFieldExists } = require('../utils/helpers');
-const config = require('../config.json');
+const config = require('../config/config.json');
 
 const router = express.Router();
 

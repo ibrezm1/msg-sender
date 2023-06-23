@@ -50,52 +50,39 @@
   <textarea id="message" placeholder="Enter the message"></textarea>
 
   <button onclick="sendMessage()">Send Message</button>
+  
+  <button onclick="listBucketContents()">List Bucket Contents</button> <!-- Added button for listing bucket contents -->
 
   <script>
     // External configuration JSON
-    var config = {
-      email: {
-        tokenEndpoint: "https://example.com/email/token",
-        defaultContent: {
-          subject: "Hello",
-          body: "This is an email message."
-        }
-      },
-      sms: {
-        tokenEndpoint: "https://example.com/sms/token",
-        defaultContent: {
-          phoneNumber: "1234567890",
-          message: "This is an SMS message."
-        }
-      },
-      push: {
-        tokenEndpoint: "https://example.com/push/token",
-        defaultContent: {
-          title: "New Notification",
-          body: "This is a push notification."
-        }
-      }
-    };
-
-    function populateMessage() {
-  var messageType = document.getElementById("messageType").value;
-
-  // Exit if the message type is blank
-  if (!messageType) {
-    return;
+    function loadConfig() {
+    return fetch('/api/config')  // Updated URL
+      .then(response => response.json())
+      .catch(error => {
+        console.error('Error loading configuration:', error);
+      });
   }
 
-  // Fetch message details from the server
-  fetch(`http://localhost:3000/get-message-details?messageType=${messageType}`)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("tokenEndpoint").value = data.tokenEndpoint;
-      document.getElementById("message").value = JSON.stringify(data.defaultContent);
-    })
-    .catch(error => {
-      console.error("Error fetching message details:", error);
-    });
-}
+
+    function populateMessage() {
+      var messageType = document.getElementById("messageType").value;
+
+      // Exit if the message type is blank
+      if (!messageType) {
+        return;
+      }
+
+      // Fetch message details from the server
+      fetch(`http://localhost:3000/get-message-details?messageType=${messageType}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("tokenEndpoint").value = data.tokenEndpoint;
+          document.getElementById("message").value = JSON.stringify(data.defaultContent);
+        })
+        .catch(error => {
+          console.error("Error fetching message details:", error);
+        });
+    }
 
     function sendMessage() {
       var tokenEndpoint = document.getElementById("tokenEndpoint").value;
@@ -126,6 +113,22 @@
         console.error("Error sending message:", error);
         // Handle the error if the request fails
       });
+    }
+
+    function listBucketContents() {
+
+      // Fetch the bucket contents from the server
+   //   fetch(`http://localhost:3000/gcs-storage/${bucketName}/${folderName}`)
+      fetch(`http://localhost:3000/gcs-storage/plated-ensign-390102-ml/models/`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Bucket contents:", data);
+          // Handle the bucket contents as needed
+        })
+        .catch(error => {
+          console.error("Error listing bucket contents:", error);
+          // Handle the error if the request fails
+        });
     }
   </script>
 </body>
